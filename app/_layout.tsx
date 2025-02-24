@@ -4,7 +4,6 @@ import { useFonts } from 'expo-font';
 import '../global.css';
 import { SafeAreaView } from 'react-native';
 import CloudswishLogo from 'components/CloudSwishLogo';
-import DonationsButton from 'components/DonationsButton';
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({
@@ -25,7 +24,7 @@ export default function Layout() {
           drawerStyle: {
             backgroundColor: '#F8FAFC', // background.DEFAULT from Tailwind config
           },
-          drawerActiveBackgroundColor: '#1B3D54', // accent.DEFAULT from Tailwind config
+          drawerActiveBackgroundColor: '#42B0ED', // accent.DEFAULT from Tailwind config
           drawerActiveTintColor: '#FFFFFF', // text.light from Tailwind config
           drawerInactiveTintColor: '#2D3748', // text.DEFAULT from Tailwind config
         }}>

@@ -14,10 +14,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { useState, useEffect, useCallback } from 'react';
 import { format, isAfter, isBefore, addDays, differenceInSeconds, parse } from 'date-fns';
 import { base_url } from '../libs/base-url';
-import axios from 'axios';
-import { ar } from 'date-fns/locale'; // For Hijri conversion
+import axios from 'axios'; // For Hijri conversion
 import moment from 'moment-hijri';
-import CloudswishLogo from 'components/CloudSwishLogo';
+import DonationButton from 'components/DonationsButton';
+import HijriDate from 'components/HijriDate';
 
 // Types
 interface PrayerTime {
@@ -313,9 +313,9 @@ export default function MainScreen() {
 
   return (
     <SafeAreaView
-      className="flex-1 bg-background-dark mb-4"
+      className="flex-1 bg-primary-light mb-4"
       style={{ paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}>
-      <ScrollView className="flex-1">
+      <View className="flex-1">
         {/* Header */}
         <View className="pb-2">
           <View className="shadw-md flex-row items-center justify-between bg-primary-light/95 py-2">
@@ -344,10 +344,11 @@ export default function MainScreen() {
             <Text className="text-center text-base font-medium text-text-light">
               {format(currentTime, 'EEEE dd MMMM yyyy')}
             </Text>
-            <Text className="text-center text-base font-medium text-text-light">{hijriDateEn}</Text>
+            {/* <Text className="text-center text-base font-medium text-text-light">{hijriDateEn}</Text>
             <Text className="mt-0.5 text-center text-sm text-text-light opacity-90">
               {hijriDateAr}
-            </Text>
+            </Text> */}
+            <HijriDate />
           </View>
         </View>
 
@@ -368,7 +369,7 @@ export default function MainScreen() {
         )}
 
         {/* Prayer Times Container */}
-        <View className="mx-4 mt-2 overflow-hidden rounded-xl bg-primary-light/95 py-4 shadow-lg">
+        <View className="mx-4 mt-2 overflow-hidden rounded-xl bg-primary-dark/95 py-4 shadow-lg">
           {prayerTimes &&
             PRAYER_INFO.map((prayer, index) => (
               <PrayerTimeRow
@@ -393,7 +394,8 @@ export default function MainScreen() {
               />
             ))}
         </View>
-      </ScrollView>
+        <DonationButton />
+      </View>
     </SafeAreaView>
   );
 }

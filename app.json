@@ -1,6 +1,6 @@
 {
   "expo": {
-    "scheme": "your-app-scheme",
+    "scheme": "masjidapp",
     "name": "my-expo-app",
     "slug": "my-expo-app",
     "version": "1.0.0",
@@ -23,18 +23,31 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.syed_khizar.myexpoapp",
+      "associatedDomains": ["applinks:masjidapp"]
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.syed_khizar.myexpoapp"
+      "package": "com.syed_khizar.myexpoapp",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "masjidapp",
+              "host": "*"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "extra": {
       "router": {

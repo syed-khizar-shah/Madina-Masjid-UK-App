@@ -5,55 +5,42 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Primary colors
+        // Primary colors - from the main blue theme
         primary: {
-          DEFAULT: '#1B3D54', // Dark blue from header
-          light: '#235375',
-          dark: '#132C3E',
+          DEFAULT: '#33A1DE', // Main blue color from the right panel
+          light: '#42B0ED', // Slightly lighter blue for hover states
+          dark: '#2991CB', // Darker blue for active states
         },
         // Background colors
         background: {
-          DEFAULT: '#F8FAFC', // Light background
-          dark: '#1B3D54',    // Dark blue background
+          DEFAULT: '#FFFFFF', // White background
+          blue: '#33A1DE', // Blue background for right panel
         },
         // Text colors
         text: {
-          DEFAULT: '#2D3748',  // Default text
-          light: '#FFFFFF',    // White text
-          muted: '#94A3B8',    // Muted text
+          DEFAULT: '#333333', // Default dark text
+          light: '#FFFFFF', // White text
+          blue: '#33A1DE', // Blue text color for prayer times
+          muted: '#666666', // Muted text for secondary information
         },
-        // Accent colors
-        accent: {
-          DEFAULT: '#3B82F6', // Bright blue for highlights
-          light: '#60A5FA',
-          dark: '#2563EB',
-        },
-        // Time display colors
+        // Time display specific colors
         time: {
-          DEFAULT: '#FFFFFF',  // White for time display
-          secondary: '#E2E8F0', // Slightly muted for secondary time info
+          DEFAULT: '#FFFFFF', // White time display
+          label: '#CCCCCC', // Color for "HOURS", "MINUTES", "SECONDS" labels
+          highlight: '#33A1DE', // Highlighted time segments
+        },
+        // Selected/Active state colors
+        active: {
+          DEFAULT: '#33A1DE', // Active item background
+          text: '#FFFFFF', // Active item text
+        },
+        // Border colors
+        border: {
+          DEFAULT: '#E5E5E5', // Default border color
+          light: '#FFFFFF20', // Light border with opacity
         }
       },
     },
   },
   plugins: [],
 };
-
-// /** @type {import('tailwindcss').Config} */
-// module.exports = {
-//   content: ['./app/**/*.{js,jsx,ts,tsx}', './components/**/*.{js,jsx,ts,tsx}'],
-//   presets: [require('nativewind/preset')],
-//   theme: {
-//     extend: {
-//       colors: {
-//         primary: '#33A1DE',
-//         bg: '#49A2DA',
-//         secondary: '#F94C66',
-//         background: '#F5F6F8',
-//         text: '#2D3748',
-//         accent: '#4A5568',
-//       },
-//     },
-//   },
-//   plugins: [],
-// };
