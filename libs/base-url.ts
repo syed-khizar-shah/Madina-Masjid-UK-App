@@ -7,6 +7,8 @@ const getLocalHost = () => {
   return localhost;
 };
 
-export const base_url = __DEV__ 
-  ? `http://${getLocalHost()}:3000/api`
-  : 'https://madina-masjid-uk.vercel.app/api';
+export const base_url =
+//  __DEV__ 
+  // ? `http://${getLocalHost()}:3000/api`
+  // : 
+  'https://madina-masjid-uk.vercel.app/api';

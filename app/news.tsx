@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { useNavigation, useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
@@ -107,9 +108,9 @@ export default function NewsScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background">
       {/* Custom Header */}
-      <View className="bg-primary -mt-16 flex-row items-center justify-between px-4 py-4">
+      <View className={`bg-primary flex-row items-center justify-between px-4 ${Platform.OS==="android"?"mt-0 py-3":"-mt-16 py-4"}`}>
         <TouchableOpacity onPress={() => navigation.openDrawer()}>
-          <Ionicons name="menu" size={28} color="#FFFFFF" />
+          <Ionicons name="menu" size={Platform.OS==='android'?24:28} color="#FFFFFF" />
         </TouchableOpacity>
         <Text className="text-xl font-bold text-white">News</Text>
         <View style={{ width: 28 }} /> {/* Placeholder for balanced spacing */}

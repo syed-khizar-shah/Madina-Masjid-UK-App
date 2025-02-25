@@ -2,8 +2,9 @@ import { Drawer } from 'expo-router/drawer';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
 import '../global.css';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView, StatusBar } from 'react-native';
 import CloudswishLogo from 'components/CloudSwishLogo';
+import { Platform } from 'react-native';
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({
@@ -18,11 +19,19 @@ export default function Layout() {
 
   return (
     <SafeAreaView className="flex-1 bg-background">
+     <StatusBar
+        barStyle={Platform.OS === 'android' ? 'light-content' : 'default'} // Keep default for iOS
+        backgroundColor={Platform.OS === 'android' ? '#000' : 'transparent'} // Ensure visibility on Android
+      />
       <Drawer
         screenOptions={{
           headerShown: false,
           drawerStyle: {
             backgroundColor: '#F8FAFC', // background.DEFAULT from Tailwind config
+            paddingTop:Platform.OS === "android" ? 20 : 0
+          },
+          drawerItemStyle:{
+            marginVertical:Platform.OS === "android" ? 2 : 0,
           },
           drawerActiveBackgroundColor: '#42B0ED', // accent.DEFAULT from Tailwind config
           drawerActiveTintColor: '#FFFFFF', // text.light from Tailwind config

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { format, isAfter, isBefore, addDays, differenceInSeconds, parse } from 'date-fns';
 import { Ionicons } from '@expo/vector-icons';
@@ -239,11 +239,11 @@ const PrayerTimesDisplay = () => {
   if (error) return <ErrorState message={error} onRetry={fetchPrayerTimes} />;
 
   return (
-    <SafeAreaView className="flex-1 -mt-16 bg-background">
+    <SafeAreaView className={`flex-1 ${Platform.OS==="android" ? "mt-0": "-mt-16"} bg-background`}>
       <ScrollView className="flex-1">
-      <View className="bg-primary mb-2 flex-row items-center justify-between px-4 py-4">
+      <View className={`bg-primary mb-2 flex-row justify-between px-4 py-4 ${Platform.OS ==="android"?"":"items-center"}`}>
         <TouchableOpacity onPress={() => navigation.openDrawer()}>
-          <Ionicons name="menu" size={28} color="#FFFFFF" />
+          <Ionicons name="menu" size={Platform.OS==='android'?24:28} color="#FFFFFF" />
         </TouchableOpacity>
         <View className="">
             <Text className="mb-2 text-center text-2xl font-bold text-white">Prayer Times</Text>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
 import { useNavigation, useRouter } from 'expo-router';
 import { format, parse, isValid, startOfMonth, endOfMonth, isFriday } from 'date-fns';
 import { base_url } from '../libs/base-url';
@@ -90,9 +90,9 @@ export default function CalendarScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background">
       {/* Custom Header */}
-      <View className="bg-primary -mt-16 flex-row items-center justify-between px-4 py-4">
+      <View className={`${Platform.OS==="android"?"mt-0":"-mt-16"} bg-primary flex-row items-center justify-between px-4 py-3`}>
         <TouchableOpacity onPress={() => navigation.openDrawer()}>
-          <Ionicons name="menu" size={28} color="#FFFFFF" />
+          <Ionicons name="menu" size={Platform.OS==='android'?24:28} color="#FFFFFF" />
         </TouchableOpacity>
         <Text className="text-xl font-bold text-white">Prayer Times Calendar</Text>
         <View style={{ width: 28 }} /> {/* Placeholder for balanced spacing */}
@@ -132,10 +132,10 @@ export default function CalendarScreen() {
 
         {isLoading ? (
           <View className="items-center justify-center py-12">
-            <ActivityIndicator size="large" color="primary" />
+            <ActivityIndicator size="large" color="#3B82F6" />
           </View>
         ) : (
-          <View className="pb-6">
+          <View className={`pb-6 ${Platform.OS==="android" && "my-5 mx-2"}`}>
             <Text className="mb-4 px-4 text-lg font-bold text-text">
               Prayer Times for {format(selectedMonth, 'MMMM yyyy')}
             </Text>

@@ -146,7 +146,8 @@ const DonationButton = () => {
   return (
     <>
       <TouchableOpacity
-        className="items-center justify-center rounded-full bg-text-light p-3 shadow-lg h-24 w-24 absolute top-60 left-8"
+        className={`items-center justify-center rounded-full bg-text-light p-3 shadow-lg absolute top-60 left-8
+           ${Platform.OS==="android"?"h-20 w-20":"h-24 w-24" }`}
         onPress={() => setModalVisible(true)}>
         <View className="flex items-center">
           <FontAwesome5 name="hand-holding-heart" size={28} color="#42B0ED" />

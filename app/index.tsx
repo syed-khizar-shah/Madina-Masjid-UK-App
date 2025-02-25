@@ -15,7 +15,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { format, isAfter, isBefore, addDays, differenceInSeconds, parse } from 'date-fns';
 import { base_url } from '../libs/base-url';
 import axios from 'axios'; // For Hijri conversion
-import moment from 'moment-hijri';
+// import moment from 'moment-hijri';
 import DonationButton from 'components/DonationsButton';
 import HijriDate from 'components/HijriDate';
 
@@ -73,9 +73,8 @@ const PrayerTimeRow = ({
   isLast,
 }: PrayerTimeRowProps) => (
   <View
-    className={`flex-row items-center px-4 pb-2 pt-1 ${
-      !isLast ? 'border-b border-text-light/20' : ''
-    } ${isNext ? 'bg-primary/10' : ''}`}>
+    className={`flex-row items-center px-4 pb-2 pt-1 ${!isLast ? 'border-b border-text-light/20' : ''
+      } ${isNext ? 'bg-primary/10' : ''}`}>
     <View className="flex-1 flex-row items-center">
       <Ionicons name={icon} size={24} color="#FFFFFF" className="opacity-90" />
       <View className="ml-4">
@@ -189,9 +188,9 @@ const calculateNextPrayer = (
         break;
       }
     } else if ('time' in prayer) {
-      const timeParsed = parse(prayer.time, 'HH:mm', currentTime);
+      const timeParsed = parse(prayer.time as string, 'HH:mm', currentTime);
       if (isAfter(timeParsed, currentTimeParsed)) {
-        nextPrayerInfo = { name: prayer.name, time: prayer.time, type: 'Time' };
+        nextPrayerInfo = { name: prayer.name, time: prayer.time as string, type: 'Time' };
         break;
       }
     }
@@ -298,8 +297,8 @@ export default function MainScreen() {
   };
 
   // Format Hijri dates using moment-hijri
-  const hijriDateEn = moment(new Date()).locale('en').format('iD iMMMM iYYYY');
-  const hijriDateAr = moment(new Date()).locale('ar').format('iD iMMMM iYYYY');
+  // const hijriDateEn = moment(new Date()).locale('en').format('iD iMMMM iYYYY');
+  // const hijriDateAr = moment(new Date()).locale('ar').format('iD iMMMM iYYYY');
 
   if (loading) {
     return (
@@ -314,7 +313,7 @@ export default function MainScreen() {
   return (
     <SafeAreaView
       className="flex-1 bg-primary-light mb-4"
-      style={{ paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}>
+      style={{ paddingTop: 0 }}>
       <View className="flex-1">
         {/* Header */}
         <View className="pb-2">
@@ -331,7 +330,7 @@ export default function MainScreen() {
           </View>
 
           {/* Logo */}
-          <View className="mt-4 items-center">
+          <View className={`${Platform.OS === "android" ? "mt-0" : "mt-4"} items-center`}>
             <Image
               source={require('../assets/logo/logo.png')}
               className="h-18 w-44"
@@ -340,7 +339,7 @@ export default function MainScreen() {
           </View>
 
           {/* Date & Hijri Date */}
-          <View className="mt-1">
+          <View className={Platform.OS==="android"?"mt-0":"mt-1"}>
             <Text className="text-center text-base font-medium text-text-light">
               {format(currentTime, 'EEEE dd MMMM yyyy')}
             </Text>
@@ -381,12 +380,12 @@ export default function MainScreen() {
                   prayer.name === 'Sunrise' || prayer.name === 'Maghrib'
                     ? (prayerTimes[prayer.name.toLowerCase() as keyof PrayerTimes] as string)
                     : (prayerTimes[prayer.name.toLowerCase() as keyof PrayerTimes] as PrayerTime)
-                        .startTime
+                      .startTime
                 }
                 endTime={
                   prayer.name !== 'Sunrise' && prayer.name !== 'Maghrib'
                     ? (prayerTimes[prayer.name.toLowerCase() as keyof PrayerTimes] as PrayerTime)
-                        .jamaatTime
+                      .jamaatTime
                     : undefined
                 }
                 isNext={nextPrayer?.name === prayer.name}
