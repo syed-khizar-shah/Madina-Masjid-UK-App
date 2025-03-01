@@ -27,6 +27,7 @@ const DonationButton = () => {
   const [customAmount, setCustomAmount] = useState('');
   const [loading, setLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentSuccess,setPaymentSuccess] = useState(false);
 
   // Predefined donation amounts
   const donationAmounts = [5, 10, 15, 20, 25, 30, 35, 40];
@@ -53,6 +54,7 @@ const DonationButton = () => {
         amount: parseFloat(donationAmount),
         appScheme: 'masjidapp',
       });
+      console.log(response.data)
 
       if (!response.data.approvalUrl) {
         throw new Error('No approval URL received');
@@ -62,7 +64,7 @@ const DonationButton = () => {
       try {
         const result = await WebBrowser.openAuthSessionAsync(
           response.data.approvalUrl,
-          'masjidapp://payment/success',
+          'masjidapp:///?status=success',
           {
             showInRecents: true,
           }
@@ -73,7 +75,7 @@ const DonationButton = () => {
           const urlParams = new URLSearchParams(result.url.split('?')[1]);
           const paymentId = urlParams.get('paymentId');
           const PayerID = urlParams.get('PayerID');
-
+          console.log({paymentId,PayerID})
           if (paymentId && PayerID) {
             handlePaymentSuccess(paymentId, PayerID);
           } else {
@@ -104,6 +106,8 @@ const DonationButton = () => {
       });
 
       if (captureResponse.data.success) {
+        setPaymentSuccess(true);
+        console.log("here")
         setModalVisible(false);
         alert('Thank you for donation.');
       } else {

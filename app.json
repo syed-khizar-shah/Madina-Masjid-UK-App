@@ -1,8 +1,8 @@
 {
   "expo": {
     "scheme": "masjidapp",
-    "name": "my-expo-app",
-    "slug": "my-expo-app",
+    "name": "Madina Masjid",
+    "slug": "masjidapp",
     "version": "1.0.0",
     "newArchEnabled": true,
     "web": {
@@ -21,20 +21,24 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#33A1DE"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.syed_khizar.myexpoapp",
-      "associatedDomains": ["applinks:masjidapp"]
+      "bundleIdentifier": "com.madina.masjidukapp",
+      "associatedDomains": [
+        "applinks:masjidapp"
+      ]
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.syed_khizar.myexpoapp",
+      "package": "com.madina.masjidukapp",
       "intentFilters": [
         {
           "action": "VIEW",
@@ -45,7 +49,10 @@
               "host": "*"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -54,7 +61,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "e41e6a26-f1df-491f-9633-38320c65c83b"
+        "projectId": "0c2859f3-b8d5-406a-91e4-fd4fc5f6f83f"
       }
     }
   }
