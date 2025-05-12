@@ -8,6 +8,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Image,
+  ImageBackground,
 } from 'react-native';
 import { useNavigation, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,7 +19,6 @@ import axios from 'axios'; // For Hijri conversion
 // import moment from 'moment-hijri';
 import DonationButton from 'components/DonationsButton';
 import HijriDate from 'components/HijriDate';
-
 // Types
 interface PrayerTime {
   startTime: string;
@@ -74,7 +74,7 @@ const PrayerTimeRow = ({
 }: PrayerTimeRowProps) => (
   <View
     className={`flex-row items-center px-4 pb-2 pt-1 ${!isLast ? 'border-b border-text-light/20' : ''
-      } ${isNext ? 'bg-primary/10' : ''}`}>
+      } ${isNext ? 'bg-primary/70' : ''}`}>
     <View className="flex-1 flex-row items-center">
       <Ionicons name={icon} size={24} color="#FFFFFF" className="opacity-90" />
       <View className="ml-4">
@@ -236,11 +236,23 @@ export default function MainScreen() {
         `${base_url}/prayer-times/date?date=${format(new Date(), 'yyyy-MM-dd')}`
       );
       setPrayerTimes(response.data);
+      setError(null); // Clear error if success
     } catch (err) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 404) {
+          setError('Prayer times not available for this date');
+        } else {
+          setError('Failed to load prayer times');
+        }
+      } else {
+        setError('Something went wrong');
+      }
+
+      setPrayerTimes(null);
       console.error('Error fetching prayer times:', err);
-      setError('Failed to load prayer times');
     }
   }, []);
+
 
   const fetchNews = async () => {
     try {
@@ -249,6 +261,7 @@ export default function MainScreen() {
       setNews(publishedNews);
     } catch (err) {
       console.error('Error fetching news:', err);
+      setNews([])
       setError('Failed to load news');
     } finally {
       setLoading(false);
@@ -311,90 +324,103 @@ export default function MainScreen() {
   }
 
   return (
-    <SafeAreaView
-      className="flex-1 bg-primary-light mb-4"
-      style={{ paddingTop: 0 }}>
-      <View className="flex-1">
-        {/* Header */}
-        <View className="pb-2">
-          <View className="shadw-md flex-row items-center justify-between bg-primary-light/95 py-2">
-            <TouchableOpacity
-              className="ml-4"
-              onPress={() => {
-                // @ts-ignore
-                navigation.openDrawer();
-              }}>
-              <Ionicons name="menu" size={24} color="white" />
-            </TouchableOpacity>
-            <NewsBanner />
-          </View>
+    <ImageBackground
+      source={require("../assets/bg-blue-pattern.jpg")}
+      resizeMode="cover"
+      className="flex-1"
+    >
+      <SafeAreaView
+        className="flex-1 mb-4"
+        style={{ paddingTop: 0 }}>
+        <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
+          <View className="flex-1 mb-10">
+            {/* Header */}
+            <View className="pb-2">
+              <View className="shadw-md flex-row items-center justify-between bg-primary-light/50 py-2">
+                <TouchableOpacity
+                  className="ml-4"
+                  onPress={() => {
+                    // @ts-ignore
+                    navigation.openDrawer();
+                  }}>
+                  <Ionicons name="menu" size={24} color="white" />
+                </TouchableOpacity>
+                <NewsBanner />
+              </View>
 
-          {/* Logo */}
-          <View className={`${Platform.OS === "android" ? "mt-0" : "mt-4"} items-center`}>
-            <Image
-              source={require('../assets/logo/logo.png')}
-              className="h-18 w-44"
-              resizeMode="contain"
-            />
-          </View>
+              {/* Logo */}
+              <View className={`${Platform.OS === "android" ? "mt-0" : "mt-4"} items-center`}>
+                <Image
+                  source={require('../assets/logo/logo.png')}
+                  className="h-18 w-44"
+                  resizeMode="contain"
+                />
+              </View>
 
-          {/* Date & Hijri Date */}
-          <View className={Platform.OS==="android"?"mt-0":"mt-1"}>
-            <Text className="text-center text-base font-medium text-text-light">
-              {format(currentTime, 'EEEE dd MMMM yyyy')}
-            </Text>
-            {/* <Text className="text-center text-base font-medium text-text-light">{hijriDateEn}</Text>
+              {/* Date & Hijri Date */}
+              <View className={Platform.OS === "android" ? "mt-0" : "mt-1"}>
+                <Text className="text-center text-base font-medium text-text-light">
+                  {format(currentTime, 'EEEE dd MMMM yyyy')}
+                </Text>
+                {/* <Text className="text-center text-base font-medium text-text-light">{hijriDateEn}</Text>
             <Text className="mt-0.5 text-center text-sm text-text-light opacity-90">
               {hijriDateAr}
             </Text> */}
-            <HijriDate />
-          </View>
-        </View>
+                <HijriDate />
+              </View>
+            </View>
 
-        {/* Next Prayer Time */}
-        {nextPrayer && timeToNextPrayer && (
-          <View className="mx-4 mt-1 bg-transparent">
-            <Text className="py-3 text-center text-2xl font-semibold text-text-light">
-              {PRAYER_INFO.find((p) => p.name === nextPrayer.name)?.arabicName || nextPrayer.name}{' '}
-              {nextPrayer.type === 'Jamaat' ? 'Jamaat' : 'Start'}
-            </Text>
-            <Text className="text-center text-5xl font-bold text-text-light">
-              {nextPrayer.time}
-            </Text>
-            <Text className="mt-1 text-center text-xl text-text-light opacity-90">
-              {timeToNextPrayer.hours}h {timeToNextPrayer.minutes}m
-            </Text>
-          </View>
-        )}
+            {/* Next Prayer Time */}
+            {nextPrayer && timeToNextPrayer ? (
+              <View className="mx-4 mt-1 bg-transparent">
+                <Text className="py-3 text-center text-2xl font-semibold text-text-light">
+                  {PRAYER_INFO.find((p) => p.name === nextPrayer.name)?.arabicName || nextPrayer.name}{' '}
+                  {nextPrayer.type === 'Jamaat' ? 'Jamaat' : 'Start'}
+                </Text>
+                <Text className="text-center text-5xl font-bold text-text-light">
+                  {nextPrayer.time}
+                </Text>
+                <Text className="mt-1 text-center text-xl text-text-light opacity-90">
+                  {timeToNextPrayer.hours}h {timeToNextPrayer.minutes}m
+                </Text>
+              </View>
+            ) : null}
 
-        {/* Prayer Times Container */}
-        <View className="mx-4 mt-2 overflow-hidden rounded-xl bg-primary-dark/95 py-4 shadow-lg">
-          {prayerTimes &&
-            PRAYER_INFO.map((prayer, index) => (
-              <PrayerTimeRow
-                key={prayer.name}
-                name={prayer.name}
-                arabicName={prayer.arabicName}
-                icon={prayer.icon}
-                startTime={
-                  prayer.name === 'Sunrise' || prayer.name === 'Maghrib'
-                    ? (prayerTimes[prayer.name.toLowerCase() as keyof PrayerTimes] as string)
-                    : (prayerTimes[prayer.name.toLowerCase() as keyof PrayerTimes] as PrayerTime)
-                      .startTime
-                }
-                endTime={
-                  prayer.name !== 'Sunrise' && prayer.name !== 'Maghrib'
-                    ? (prayerTimes[prayer.name.toLowerCase() as keyof PrayerTimes] as PrayerTime)
-                      .jamaatTime
-                    : undefined
-                }
-                isNext={nextPrayer?.name === prayer.name}
-                isLast={index === PRAYER_INFO.length - 1}
-              />
-            ))}
-        </View>
-        <DonationButton />
-      </View>
-    </SafeAreaView>
+            {/* Prayer Times Container */}
+            <View className="mx-4 mt-2 overflow-hidden rounded-xl bg-primary-light/70 py-4 shadow-lg">
+              {prayerTimes ? (
+                PRAYER_INFO.map((prayer, index) => (
+                  <PrayerTimeRow
+                    key={prayer.name}
+                    name={prayer.name}
+                    arabicName={prayer.arabicName}
+                    icon={prayer.icon}
+                    startTime={
+                      prayer.name === 'Sunrise' || prayer.name === 'Maghrib'
+                        ? (prayerTimes[prayer.name.toLowerCase() as keyof PrayerTimes] as string)
+                        : (prayerTimes[prayer.name.toLowerCase() as keyof PrayerTimes] as PrayerTime)
+                          .startTime
+                    }
+                    endTime={
+                      prayer.name !== 'Sunrise' && prayer.name !== 'Maghrib'
+                        ? (prayerTimes[prayer.name.toLowerCase() as keyof PrayerTimes] as PrayerTime)
+                          .jamaatTime
+                        : undefined
+                    }
+                    isNext={nextPrayer?.name === prayer.name}
+                    isLast={index === PRAYER_INFO.length - 1}
+                  />
+                ))) :
+                <View className="px-4">
+                  <Text className="text-center text-base font-medium text-red-500">
+                    Prayer times not available for today.
+                  </Text>
+                </View>}
+            </View>
+            <DonationButton />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }

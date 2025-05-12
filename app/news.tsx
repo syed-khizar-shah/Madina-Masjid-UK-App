@@ -6,6 +6,7 @@ import {
   Image,
   ActivityIndicator,
   Platform,
+  ImageBackground,
 } from 'react-native';
 import { useNavigation, useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
@@ -106,9 +107,14 @@ export default function NewsScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+        <ImageBackground
+          source={require("../assets/bg-blue-pattern.jpg")}
+          resizeMode="cover"
+          className="flex-1"
+        >
+    <SafeAreaView className="flex-1">
       {/* Custom Header */}
-      <View className={`bg-primary flex-row items-center justify-between px-4 ${Platform.OS==="android"?"mt-0 py-3":"-mt-16 py-4"}`}>
+      <View className={`bg-primary-light/50 flex-row items-center justify-between px-4 ${Platform.OS==="android"?"mt-0 py-3":"-mt-16 py-4"}`}>
         <TouchableOpacity onPress={() => navigation.openDrawer()}>
           <Ionicons name="menu" size={Platform.OS==='android'?24:28} color="#FFFFFF" />
         </TouchableOpacity>
@@ -117,7 +123,7 @@ export default function NewsScreen() {
       </View>
       
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View className={`p-4 ${isTablet ? 'mx-auto max-w-4xl' : ''}`}>
+        <View className={`p-4 mb-10 ${isTablet ? 'mx-auto max-w-4xl' : ''}`}>
           {news.map((item) => (
             <TouchableOpacity key={item._id} activeOpacity={0.8}>
               <View className="mb-6 overflow-hidden rounded-2xl bg-white shadow-lg">
@@ -171,5 +177,6 @@ export default function NewsScreen() {
         </View>
       </ScrollView>
     </SafeAreaView>
+    </ImageBackground>
   );
 }

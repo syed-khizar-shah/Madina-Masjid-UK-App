@@ -2,9 +2,10 @@ import { Drawer } from 'expo-router/drawer';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
 import '../global.css';
-import { SafeAreaView, StatusBar } from 'react-native';
+import { SafeAreaView, StatusBar, View } from 'react-native';
 import CloudswishLogo from 'components/CloudSwishLogo';
 import { Platform } from 'react-native';
+import InfoButton from 'components/InfoButton';
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({
@@ -68,6 +69,9 @@ export default function Layout() {
           }}
         />
       </Drawer>
+      <View>
+        <InfoButton/>
+      </View>
       <CloudswishLogo />
     </SafeAreaView>
   );

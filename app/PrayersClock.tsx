@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Platform, ImageBackground } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { format, isAfter, isBefore, addDays, differenceInSeconds, parse } from 'date-fns';
 import { Ionicons } from '@expo/vector-icons';
@@ -137,7 +137,8 @@ const PrayerCard = memo(
     isNext?: boolean;
   }) => (
     <View
-      className={`mb-4 rounded-xl bg-white p-6 shadow-sm ${isNext ? 'border-2 border-primary' : ''}`}>
+      className={`mb-4`}>
+      <View className={`rounded-xl bg-white/70 p-6 ${isNext ? 'border-2 border-primary' : ''}`}>
       <View className="flex-row items-center justify-between">
         <View className="flex-1">
           <View className="flex-row items-center gap-2">
@@ -160,6 +161,7 @@ const PrayerCard = memo(
             <Text className="text-sm font-medium text-primary">Next</Text>
           </View>
         )}
+      </View>
       </View>
     </View>
   )
@@ -239,81 +241,87 @@ const PrayerTimesDisplay = () => {
   if (error) return <ErrorState message={error} onRetry={fetchPrayerTimes} />;
 
   return (
-    <SafeAreaView className={`flex-1 ${Platform.OS==="android" ? "mt-0": "-mt-16"} bg-background`}>
-      <ScrollView className="flex-1">
-      <View className={`bg-primary mb-2 flex-row justify-between px-4 py-4 ${Platform.OS ==="android"?"":"items-center"}`}>
-        <TouchableOpacity onPress={() => navigation.openDrawer()}>
-          <Ionicons name="menu" size={Platform.OS==='android'?24:28} color="#FFFFFF" />
-        </TouchableOpacity>
-        <View className="">
-            <Text className="mb-2 text-center text-2xl font-bold text-white">Prayer Times</Text>
-            <Text className="text-center text-white">
-              {format(currentTime, 'EEEE, MMMM d, yyyy')}
-            </Text>
-          </View>
-        <View style={{ width: 28 }} /> {/* Placeholder for balanced spacing */}
-      </View>
-
-
-        <View className="mb-8 rounded-xl bg-white p-6 shadow-md mx-4">
-          <View className="mb-6 items-center">
-            <Text className="text-4xl font-bold text-text">{format(currentTime, 'HH:mm:ss')}</Text>
-          </View>
-
-          {nextPrayer && timeToNextPrayer && (
-            <View className="border-t border-gray-100 pt-6">
-              <Text className="mb-4 text-center font-medium text-primary">
-                Next Prayer: {nextPrayer.name} - {nextPrayer.time}
+    <ImageBackground
+      source={require("../assets/bg-blue-pattern.jpg")}
+      resizeMode="cover"
+      className="flex-1"
+    >
+      <SafeAreaView className={`flex-1 ${Platform.OS === "android" ? "mt-0" : "-mt-16"}`}>
+        <ScrollView className="flex-1">
+          <View className={`bg-primary-light/50 mb-2 flex-row justify-between px-4 py-4 ${Platform.OS === "android" ? "" : "items-center"}`}>
+            <TouchableOpacity onPress={() => navigation.openDrawer()}>
+              <Ionicons name="menu" size={Platform.OS === 'android' ? 24 : 28} color="#FFFFFF" />
+            </TouchableOpacity>
+            <View className="">
+              <Text className="mb-2 text-center text-2xl font-bold text-white">Prayer Times</Text>
+              <Text className="text-center text-white">
+                {format(currentTime, 'EEEE, MMMM d, yyyy')}
               </Text>
-              <View className="flex-row justify-center gap-4">
-                <TimeBox value={formatTimeUnit(timeToNextPrayer.hours)} label="Hours" />
-                <TimeBox value={formatTimeUnit(timeToNextPrayer.minutes)} label="Minutes" />
-                <TimeBox value={formatTimeUnit(timeToNextPrayer.seconds)} label="Seconds" />
+            </View>
+            <View style={{ width: 28 }} /> {/* Placeholder for balanced spacing */}
+          </View>
+
+
+          <View className="mb-8 rounded-xl bg-white/80 p-6 shadow-md mx-4">
+            <View className="mb-6 items-center">
+              <Text className="text-4xl font-bold text-text">{format(currentTime, 'HH:mm:ss')}</Text>
+            </View>
+
+            {nextPrayer && timeToNextPrayer && (
+              <View className="border-t border-primary/20 pt-6">
+                <Text className="mb-4 text-center font-medium text-primary">
+                  Next Prayer: {nextPrayer.name} - {nextPrayer.time}
+                </Text>
+                <View className="flex-row justify-center gap-4">
+                  <TimeBox value={formatTimeUnit(timeToNextPrayer.hours)} label="Hours" />
+                  <TimeBox value={formatTimeUnit(timeToNextPrayer.minutes)} label="Minutes" />
+                  <TimeBox value={formatTimeUnit(timeToNextPrayer.seconds)} label="Seconds" />
+                </View>
               </View>
+            )}
+          </View>
+
+          {prayerTimes && (
+            <View className="mb-10 mx-4">
+              <PrayerCard
+                name="Fajr"
+                startTime={prayerTimes.fajr.startTime}
+                jamaatTime={prayerTimes.fajr.jamaatTime}
+                isNext={nextPrayer?.name === 'Fajr'}
+              />
+              <PrayerCard
+                name="Sunrise"
+                startTime={prayerTimes.sunrise}
+                isNext={nextPrayer?.name === 'Sunrise'}
+              />
+              <PrayerCard
+                name="Zuhr"
+                startTime={prayerTimes.zuhr.startTime}
+                jamaatTime={prayerTimes.zuhr.jamaatTime}
+                isNext={nextPrayer?.name === 'Zuhr'}
+              />
+              <PrayerCard
+                name="Asr"
+                startTime={prayerTimes.asr.startTime}
+                jamaatTime={prayerTimes.asr.jamaatTime}
+                isNext={nextPrayer?.name === 'Asr'}
+              />
+              <PrayerCard
+                name="Maghrib"
+                startTime={prayerTimes.maghrib}
+                isNext={nextPrayer?.name === 'Maghrib'}
+              />
+              <PrayerCard
+                name="Isha"
+                startTime={prayerTimes.isha.startTime}
+                jamaatTime={prayerTimes.isha.jamaatTime}
+                isNext={nextPrayer?.name === 'Isha'}
+              />
             </View>
           )}
-        </View>
-
-        {prayerTimes && (
-          <View className="mb-8 mx-4">
-            <PrayerCard
-              name="Fajr"
-              startTime={prayerTimes.fajr.startTime}
-              jamaatTime={prayerTimes.fajr.jamaatTime}
-              isNext={nextPrayer?.name === 'Fajr'}
-            />
-            <PrayerCard
-              name="Sunrise"
-              startTime={prayerTimes.sunrise}
-              isNext={nextPrayer?.name === 'Sunrise'}
-            />
-            <PrayerCard
-              name="Zuhr"
-              startTime={prayerTimes.zuhr.startTime}
-              jamaatTime={prayerTimes.zuhr.jamaatTime}
-              isNext={nextPrayer?.name === 'Zuhr'}
-            />
-            <PrayerCard
-              name="Asr"
-              startTime={prayerTimes.asr.startTime}
-              jamaatTime={prayerTimes.asr.jamaatTime}
-              isNext={nextPrayer?.name === 'Asr'}
-            />
-            <PrayerCard
-              name="Maghrib"
-              startTime={prayerTimes.maghrib}
-              isNext={nextPrayer?.name === 'Maghrib'}
-            />
-            <PrayerCard
-              name="Isha"
-              startTime={prayerTimes.isha.startTime}
-              jamaatTime={prayerTimes.isha.jamaatTime}
-              isNext={nextPrayer?.name === 'Isha'}
-            />
-          </View>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 };
 

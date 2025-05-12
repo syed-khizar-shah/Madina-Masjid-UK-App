@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Platform, ImageBackground } from 'react-native';
 import { useNavigation, useRouter } from 'expo-router';
 import { format, parse, isValid, startOfMonth, endOfMonth, isFriday } from 'date-fns';
 import { base_url } from '../libs/base-url';
@@ -88,9 +88,14 @@ export default function CalendarScreen() {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <ImageBackground
+          source={require("../assets/bg-blue-pattern.jpg")}
+          resizeMode="cover"
+          className="flex-1"
+        >
+    <SafeAreaView className="flex-1">
       {/* Custom Header */}
-      <View className={`${Platform.OS==="android"?"mt-0":"-mt-16"} bg-primary flex-row items-center justify-between px-4 py-3`}>
+      <View className={`${Platform.OS==="android"?"mt-0":"-mt-16"} bg-primary-light/50 flex-row items-center justify-between px-4 py-3`}>
         <TouchableOpacity onPress={() => navigation.openDrawer()}>
           <Ionicons name="menu" size={Platform.OS==='android'?24:28} color="#FFFFFF" />
         </TouchableOpacity>
@@ -135,8 +140,8 @@ export default function CalendarScreen() {
             <ActivityIndicator size="large" color="#3B82F6" />
           </View>
         ) : (
-          <View className={`pb-6 ${Platform.OS==="android" && "my-5 mx-2"}`}>
-            <Text className="mb-4 px-4 text-lg font-bold text-text">
+          <View className={`pb-6 mb-10 ${Platform.OS==="android" && "my-5 mx-2"}`}>
+            <Text className="mb-4 px-4 text-lg font-bold text-white">
               Prayer Times for {format(selectedMonth, 'MMMM yyyy')}
             </Text>
             <PrayerTimesList prayerTimes={existingPrayerTimes} />
@@ -144,5 +149,6 @@ export default function CalendarScreen() {
         )}
       </ScrollView>
     </SafeAreaView>
+    </ImageBackground>
   );
 }

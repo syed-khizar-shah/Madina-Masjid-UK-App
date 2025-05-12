@@ -85,7 +85,7 @@ function PrayerTimesList({ prayerTimes }: PrayerTimesListProps) {
   if (!prayerTimes || prayerTimes.length === 0) {
     return (
       <View className="w-full py-8">
-        <Text className="text-center text-gray-500">
+        <Text className="text-center text-white">
           No prayer times data to show
         </Text>
       </View>
