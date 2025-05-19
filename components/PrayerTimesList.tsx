@@ -122,7 +122,7 @@ function PrayerTimesList({ prayerTimes }: PrayerTimesListProps) {
             <Text className="font-bold">Zawal</Text>
           </View>
           <View className="p-2 border w-32">
-            <Text className="font-bold text-center">Zuhr</Text>
+            <Text className="font-bold text-center">Dhuhr</Text>
             <View className="flex-row justify-between mt-1">
               <Text className="text-xs">Start</Text>
               <Text className="text-xs">Jamaat</Text>

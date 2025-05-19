@@ -278,11 +278,13 @@ export default function MainScreen() {
   }, []);
 
   useEffect(() => {
+
     if (prayerTimes) {
       const { nextPrayer: np, timeToNextPrayer: ttp } = calculateNextPrayer(
         prayerTimes,
         currentTime
       );
+      // console.log({np})
       setNextPrayer(np);
       setTimeToNextPrayer(ttp);
     }
@@ -392,7 +394,8 @@ export default function MainScreen() {
                 PRAYER_INFO.map((prayer, index) => (
                   <PrayerTimeRow
                     key={prayer.name}
-                    name={prayer.name}
+                    // name={prayer.name}
+                    name={prayer.name == "Zuhr" ? "Dhuhr":prayer.name}
                     arabicName={prayer.arabicName}
                     icon={prayer.icon}
                     startTime={

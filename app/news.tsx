@@ -119,7 +119,7 @@ export default function NewsScreen() {
           <Ionicons name="menu" size={Platform.OS==='android'?24:28} color="#FFFFFF" />
         </TouchableOpacity>
         <Text className="text-xl font-bold text-white">News</Text>
-        <View style={{ width: 28 }} /> {/* Placeholder for balanced spacing */}
+        <View style={{ width: 28 }} />
       </View>
       
       <ScrollView showsVerticalScrollIndicator={false}>

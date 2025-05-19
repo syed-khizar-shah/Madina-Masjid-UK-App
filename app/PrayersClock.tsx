@@ -4,6 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { format, isAfter, isBefore, addDays, differenceInSeconds, parse } from 'date-fns';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from 'expo-router';
+import axios from 'axios';
+import { base_url } from 'libs/base-url';
 
 // Types
 interface PrayerTime {
@@ -38,10 +40,7 @@ const formatTimeUnit = (value: number): string => value.toString().padStart(2, '
 const calculateNextPrayer = (
   prayerTimes: PrayerTimes | null,
   currentTime: Date
-): {
-  nextPrayer: NextPrayer | null;
-  timeToNextPrayer: TimeRemaining | null;
-} => {
+): { nextPrayer: NextPrayer | null; timeToNextPrayer: TimeRemaining | null } => {
   if (!prayerTimes) return { nextPrayer: null, timeToNextPrayer: null };
 
   const prayers = [
@@ -56,11 +55,7 @@ const calculateNextPrayer = (
       startTime: prayerTimes.zuhr.startTime,
       jamaatTime: prayerTimes.zuhr.jamaatTime,
     },
-    {
-      name: 'Asr',
-      startTime: prayerTimes.asr.startTime,
-      jamaatTime: prayerTimes.asr.jamaatTime,
-    },
+    { name: 'Asr', startTime: prayerTimes.asr.startTime, jamaatTime: prayerTimes.asr.jamaatTime },
     { name: 'Maghrib', time: prayerTimes.maghrib },
     {
       name: 'Isha',
@@ -72,22 +67,23 @@ const calculateNextPrayer = (
   const currentTimeStr = format(currentTime, 'HH:mm');
   const currentTimeParsed = parse(currentTimeStr, 'HH:mm', currentTime);
 
-  let nextPrayerInfo = null;
+  let nextPrayerInfo: NextPrayer | null = null;
+
   for (const prayer of prayers) {
     if ('startTime' in prayer && prayer.jamaatTime) {
       const startTimeParsed = parse(prayer.startTime, 'HH:mm', currentTime);
       const jamaatTimeParsed = parse(prayer.jamaatTime, 'HH:mm', currentTime);
       if (isAfter(startTimeParsed, currentTimeParsed)) {
-        nextPrayerInfo = { ...prayer, time: prayer.startTime, type: 'Start' as const };
+        nextPrayerInfo = { name: prayer.name, time: prayer.startTime, type: 'Start' };
         break;
       } else if (isAfter(jamaatTimeParsed, currentTimeParsed)) {
-        nextPrayerInfo = { ...prayer, time: prayer.jamaatTime, type: 'Jamaat' as const };
+        nextPrayerInfo = { name: prayer.name, time: prayer.jamaatTime, type: 'Jamaat' };
         break;
       }
     } else if ('time' in prayer) {
-      const timeParsed = parse(prayer.time, 'HH:mm', currentTime);
+      const timeParsed = parse(prayer.time as string, 'HH:mm', currentTime);
       if (isAfter(timeParsed, currentTimeParsed)) {
-        nextPrayerInfo = { name: prayer.name, time: prayer.time, type: 'Time' as const };
+        nextPrayerInfo = { name: prayer.name, time: prayer.time as string, type: 'Time' };
         break;
       }
     }
@@ -97,7 +93,7 @@ const calculateNextPrayer = (
     nextPrayerInfo = {
       name: 'Fajr',
       time: prayerTimes.fajr.startTime,
-      type: 'Start' as const,
+      type: 'Start',
     };
   }
 
@@ -124,7 +120,7 @@ const TimeBox = memo(({ value, label }: { value: string; label: string }) => (
   </View>
 ));
 
-const PrayerCard = memo(
+const PrayerCard =
   ({
     name,
     startTime,
@@ -164,8 +160,7 @@ const PrayerCard = memo(
       </View>
       </View>
     </View>
-  )
-);
+  );
 
 const LoadingSpinner = () => (
   <SafeAreaView className="flex-1 bg-background">
@@ -196,24 +191,28 @@ const PrayerTimesDisplay = () => {
   const [timeToNextPrayer, setTimeToNextPrayer] = useState<TimeRemaining | null>(null);
   const navigation = useNavigation();
 
-  const fetchPrayerTimes = useCallback(async () => {
+const fetchPrayerTimes = useCallback(async () => {
     try {
-      setLoading(true);
-      // Simulated API call - replace with actual endpoint
-      const data = {
-        fajr: { startTime: '05:30', jamaatTime: '05:45' },
-        sunrise: '06:45',
-        zuhr: { startTime: '12:30', jamaatTime: '13:00' },
-        asr: { startTime: '15:45', jamaatTime: '16:15' },
-        maghrib: '18:30',
-        isha: { startTime: '20:00', jamaatTime: '20:30' },
-      };
-      setPrayerTimes(data);
-      setError(null);
+      const response = await axios.get(
+        `${base_url}/prayer-times/date?date=${format(new Date(), 'yyyy-MM-dd')}`
+      );
+      setPrayerTimes(response.data);
+      setError(null); // Clear error if success
     } catch (err) {
-      setError('Failed to load prayer times');
-    } finally {
-      setLoading(false);
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 404) {
+          setError('Prayer times not available for this date');
+        } else {
+          setError('Failed to load prayer times');
+        }
+      } else {
+        setError('Something went wrong');
+      }
+
+      setPrayerTimes(null);
+      console.error('Error fetching prayer times:', err);
+    } finally{
+      setLoading(false)
     }
   }, []);
 
@@ -232,6 +231,7 @@ const PrayerTimesDisplay = () => {
         prayerTimes,
         currentTime
       );
+      // console.log({np})
       setNextPrayer(np);
       setTimeToNextPrayer(ttp);
     }
@@ -258,7 +258,7 @@ const PrayerTimesDisplay = () => {
                 {format(currentTime, 'EEEE, MMMM d, yyyy')}
               </Text>
             </View>
-            <View style={{ width: 28 }} /> {/* Placeholder for balanced spacing */}
+            <View style={{ width: 28 }} />
           </View>
 
 
@@ -295,7 +295,7 @@ const PrayerTimesDisplay = () => {
                 isNext={nextPrayer?.name === 'Sunrise'}
               />
               <PrayerCard
-                name="Zuhr"
+                name="Dhuhr"
                 startTime={prayerTimes.zuhr.startTime}
                 jamaatTime={prayerTimes.zuhr.jamaatTime}
                 isNext={nextPrayer?.name === 'Zuhr'}
